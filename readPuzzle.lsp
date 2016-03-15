@@ -37,8 +37,7 @@
                 ; print out a usage statement for clisp:
                 (format t "Usage clisp: 8puzzle puzzleList~%")
                 (format t "       8puzzle - program call~%")
-                (format t "       puzzlefile -  contains an 8-puzzle start position, stored in row-major order as
-a list of 9 elements. The digits 1-8 represent the 8 tiles, and 0 represents the blank.~%")
+                (format t "       puzzlefile -  contains an 8-puzzle start position, stored in row-major order as a list of 9 elements. The digits 1-8 represent the 8 tiles, and 0 represents the blank.~%")
 
                 (format t "Usage clisp: 8puzzle~%")
                 (format t "       8puzzle.lsp - program file~%")
