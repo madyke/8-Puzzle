@@ -48,6 +48,27 @@ a list of 9 elements. The digits 1-8 represent the 8 tiles, and 0 represents the
 )
 
 
+
+
+( defun get_puzzle_file ( args )
+    ( cond 
+        ;If exactly one command line argument given
+        ( ( = 1 ( length args ) )
+            ;Get puzzle from specified file
+            ( readPuzzleFile ( car args ) )
+        )
+        
+        ;If not exactly one command line argument given
+        ( t
+            ;Required command line argument missing, print usage statement
+            (format t "Usage: clisp 8puzzle.lsp puzzlefile~%")
+            ;(format t "       clisp - runs clisp interpetter~%")
+            ;(format t "       8puzzle.lsp - program file~%")
+            ;(format t "       puzzlefile - file containing the postions of the numbers in the puzzle~%")
+        )
+    )
+)
+
 (defun readPuzzleFile (filename)
 	(with-open-file (in filename)
 		(loop for number = (read in nil)
