@@ -3,7 +3,8 @@
     ( load 'read_goal )
     ;( load 'utilities )
     
-    (format t "Puzzles!")
+    ;Load puzzle file
+    (read_start *ARGS*)
 )
 
 ; Call 8puzzle function if file run
