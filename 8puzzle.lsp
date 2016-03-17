@@ -1,5 +1,6 @@
 ( defun 8puzzle ( &optional ( puzzle NIL ) )
     ;Load program files
+    ( load 'search)
     ( load 'utilities )
 
     ;Debug

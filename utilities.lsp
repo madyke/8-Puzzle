@@ -96,7 +96,7 @@
         )
     )
 )
-(defun goalstate? (L)
+(defun goalState? (L)
     (let (g)
         (setf g '( 1 2 3 8 0 4 7 6 5 ) )
         (if (equal L g) t nil)
