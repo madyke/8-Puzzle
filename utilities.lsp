@@ -1,5 +1,5 @@
-(defun generateSuccessors (L openList)
-    (let (p q r s)
+(defun generateSuccessors (L)
+    (let (p q r s openList)
         (cond
             ((= (nth 0 L) 0)
                     (setf p (copy-list L) )
