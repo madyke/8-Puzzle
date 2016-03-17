@@ -5,7 +5,7 @@
 
     ;Debug
     ( printPuzzle puzzle )
-    ( mapcar #'printPuzzle ( generateSuccessors puzzle ) )
+    ( mapcar #'printPuzzle ( bfs puzzle ) )
 )
 
 ;Script commands for program when run from command line
