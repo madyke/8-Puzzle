@@ -108,3 +108,106 @@
     ( format t "~d ~d ~d~%" ( nth 3 puzzle ) ( nth 4 puzzle ) ( nth 5 puzzle ) )
     ( format t "~d ~d ~d~%~%" ( nth 6 puzzle ) ( nth 7 puzzle ) ( nth 8 puzzle ) )
 )
+
+( defun printSolutionPath( path )
+    ( cond
+        ;If no path, do nothing
+        ( ( = ( length path ) 0 ) )
+        
+        ;If one step left in path
+        ( ( = ( length path ) 1 )
+            ;Get steps in path
+            ( let ( ( step1 ( nth 0 path ) ) )
+                ;Print remaining step
+                ( format t "~d ~d ~d~%" ( nth 0 step1 ) ( nth 1 step1 ) ( nth 2 step1 ) )
+                ( format t "~d ~d ~d~%" ( nth 3 step1 ) ( nth 4 step1 ) ( nth 5 step1 ) )
+                ( format t "~d ~d ~d~%~%" ( nth 6 step1 ) ( nth 7 step1 ) ( nth 8 step1 ) )
+            )
+        )
+        
+        ;If two steps left in path
+        ( ( = ( length path ) 2 )
+            ( let ( ( step1 ( nth 0 path ) ) ( step2 ( nth 1 path ) ) )
+                ;Print two remaining steps
+                ( format t "~d ~d ~d          ~d ~d ~d~%"
+                    ( nth 0 step1 ) ( nth 1 step1 ) ( nth 2 step1 )
+                    ( nth 0 step2 ) ( nth 1 step2 ) ( nth 2 step2 )
+                )
+                ( format t "~d ~d ~d    ->    ~d ~d ~d~%"
+                    ( nth 3 step1 ) ( nth 4 step1 ) ( nth 5 step1 )
+                    ( nth 3 step2 ) ( nth 4 step2 ) ( nth 5 step2 )                    
+                )
+                ( format t "~d ~d ~d          ~d ~d ~d~%"
+                    ( nth 6 step1 ) ( nth 7 step1 ) ( nth 8 step1 )
+                    ( nth 6 step2 ) ( nth 7 step2 ) ( nth 8 step2 )
+                )
+            )
+        )
+        
+        ;If three steps left in path
+        ( ( = ( length path ) 3 )
+            ( let ( ( step1 ( nth 0 path ) ) ( step2 ( nth 1 path ) ) ( step3 ( nth 2 path ) ) )
+                ;Print two remaining steps
+                ( format t "~d ~d ~d          ~d ~d ~d          ~d ~d ~d~%"
+                    ( nth 0 step1 ) ( nth 1 step1 ) ( nth 2 step1 )
+                    ( nth 0 step2 ) ( nth 1 step2 ) ( nth 2 step2 )
+                    ( nth 0 step3 ) ( nth 1 step3 ) ( nth 2 step3 )
+                )
+                ( format t "~d ~d ~d    ->    ~d ~d ~d    ->    ~d ~d ~d~%"
+                    ( nth 3 step1 ) ( nth 4 step1 ) ( nth 5 step1 )
+                    ( nth 3 step2 ) ( nth 4 step2 ) ( nth 5 step2 )
+                    ( nth 3 step3 ) ( nth 4 step3 ) ( nth 5 step3 )                    
+                )
+                ( format t "~d ~d ~d          ~d ~d ~d          ~d ~d ~d~%"
+                    ( nth 6 step1 ) ( nth 7 step1 ) ( nth 8 step1 )
+                    ( nth 6 step2 ) ( nth 7 step2 ) ( nth 8 step2 )
+                    ( nth 6 step3 ) ( nth 7 step3 ) ( nth 8 step3 )
+                )
+            )
+        )
+        
+        ;If four or more steps left in path
+        ( t
+            ( let ( ( step1 ( nth 0 path ) )
+                    ( step2 ( nth 1 path ) )
+                    ( step3 ( nth 2 path ) )
+                    ( step4 ( nth 3 path ) ) )
+                ;Print two remaining steps
+                ( format t "~d ~d ~d          ~d ~d ~d          ~d ~d ~d          ~d ~d ~d~%"
+                    ( nth 0 step1 ) ( nth 1 step1 ) ( nth 2 step1 )
+                    ( nth 0 step2 ) ( nth 1 step2 ) ( nth 2 step2 )
+                    ( nth 0 step3 ) ( nth 1 step3 ) ( nth 2 step3 )
+                    ( nth 0 step4 ) ( nth 1 step4 ) ( nth 2 step4 )
+                )
+                ( format t "~d ~d ~d    ->    ~d ~d ~d    ->    ~d ~d ~d    ->    ~d ~d ~d~%"
+                    ( nth 3 step1 ) ( nth 4 step1 ) ( nth 5 step1 )
+                    ( nth 3 step2 ) ( nth 4 step2 ) ( nth 5 step2 )
+                    ( nth 3 step3 ) ( nth 4 step3 ) ( nth 5 step3 ) 
+                    ( nth 3 step4 ) ( nth 4 step4 ) ( nth 5 step4 )                    
+                )
+                ( format t "~d ~d ~d          ~d ~d ~d          ~d ~d ~d          ~d ~d ~d~%"
+                    ( nth 6 step1 ) ( nth 7 step1 ) ( nth 8 step1 )
+                    ( nth 6 step2 ) ( nth 7 step2 ) ( nth 8 step2 )
+                    ( nth 6 step3 ) ( nth 7 step3 ) ( nth 8 step3 )
+                    ( nth 6 step4 ) ( nth 7 step4 ) ( nth 8 step4 )
+                )
+            )
+            
+            ;If more than four steps were left
+            ( when ( > ( length path ) 4 )
+                (format t "~%")
+                ;Recurse to print remaining steps
+                ( printSolutionPath ( nthcdr 4 path ) )
+            )
+        )
+    )
+)
+
+( defun printBFSResults ( path )
+    ;Print results heading
+    ( format t "BFS Graph Search~%" )
+    ( format t "----------------~%" )
+    
+    ;Print BFS solution path
+    ( printSolutionPath path )
+)

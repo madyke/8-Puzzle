@@ -20,8 +20,8 @@
 	)
 
     ;Debug
-    ( printPuzzle puzzle )
-    ( mapcar #'printPuzzle ( bfs puzzle ) )
+    ;( printPuzzle puzzle )
+    ( printBFSResults ( bfs puzzle ) )
 )
 
 ;Script commands for program when run from command line
