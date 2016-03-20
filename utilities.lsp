@@ -109,6 +109,18 @@
     ( format t "~d ~d ~d~%~%" ( nth 6 puzzle ) ( nth 7 puzzle ) ( nth 8 puzzle ) )
 )
 
+( defun removeZeros ( path )
+    ;Loop over each state in the solution path
+    ( dolist ( currStep path NIL )
+        ;Loop over each spot in the current step
+        ( dotimes ( i 9 NIL )
+            ;If current position is 0, replace with a space for output
+            ( when ( = ( nth i  currStep ) 0 ) ( setf ( nth i  currStep ) " " ) )
+        )
+        
+    )
+)
+
 ( defun printSolutionPath( path )
     ( cond
         ;If no path, do nothing
@@ -179,11 +191,18 @@
                     ( nth 0 step3 ) ( nth 1 step3 ) ( nth 2 step3 )
                     ( nth 0 step4 ) ( nth 1 step4 ) ( nth 2 step4 )
                 )
-                ( format t "~d ~d ~d    ->    ~d ~d ~d    ->    ~d ~d ~d    ->    ~d ~d ~d~%"
+                ( format t "~d ~d ~d    ->    ~d ~d ~d    ->    ~d ~d ~d    ->    ~d ~d ~d"
                     ( nth 3 step1 ) ( nth 4 step1 ) ( nth 5 step1 )
                     ( nth 3 step2 ) ( nth 4 step2 ) ( nth 5 step2 )
                     ( nth 3 step3 ) ( nth 4 step3 ) ( nth 5 step3 ) 
                     ( nth 3 step4 ) ( nth 4 step4 ) ( nth 5 step4 )                    
+                )
+                ;Check if this is the last row of solution path
+                ( if ( > ( length path ) 4 )
+                    ;If another row will be printed
+                    ( format t "    ->~%" )
+                    ;If this row is the end of the solution path
+                    ( format t "~%" )
                 )
                 ( format t "~d ~d ~d          ~d ~d ~d          ~d ~d ~d          ~d ~d ~d~%"
                     ( nth 6 step1 ) ( nth 7 step1 ) ( nth 8 step1 )
@@ -208,6 +227,9 @@
     ( format t "BFS Graph Search~%" )
     ( format t "----------------~%" )
     
+    ;Call helper function to replace 0's in solution with spaces for output
+    ( removeZeros path )
+
     ;Print BFS solution path
     ( printSolutionPath path )
 )
