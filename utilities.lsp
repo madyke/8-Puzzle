@@ -284,6 +284,6 @@
     ;Call helper function to replace 0's in solution with spaces for output
     ( removeZeros path )
 
-    ;Print BFS solution path
+    ;Print solution path
     ( printSolutionPath path )
 )

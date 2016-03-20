@@ -39,10 +39,10 @@
 (defun BFS (start) (search_bfs_dfs ( copy-list start ) 'bfs))
 
 ; Depth-first-search implements the OPEN list as a STACK of (state parent) nodes.
-(defun DFID (start) (search_bfs_dfs ( copy-list start ) 'dfid))
+(defun DFID (start) (search_bfs_dfs ( copy-list start ) 'dfid 10))
 
 ; Given a start state and a search type (BFS or DFID), return a path from the start to the goal.
-(defun search_bfs_dfs (start type)
+(defun search_bfs_dfs (start type &optional bound)
     (do*                                                             ; note use of sequential DO*
         (                                                            ; initialize local loop vars
             (curNode (make-node :state start :parent nil :depth 0))  ; current node: (start nil 0)
@@ -76,8 +76,9 @@
             ( setf *NUM_GEN* ( 1+ *NUM_GEN* ) )
 
             ; if the node is not on OPEN or CLOSED
-            (when (and (not (member child OPEN   :test #'equal-states))
-                     (not (member child CLOSED :test #'equal-states)))
+            (when   (and (not (member child OPEN   :test #'equal-states))
+                         (not (member child CLOSED :test #'equal-states))
+                    )
                 
                 ; increment number of distinct nodes
                 ( setf *NUM_DIST* ( 1+ *NUM_DIST* ) )
@@ -89,7 +90,19 @@
                     ((eq type 'bfs) (setf OPEN (append OPEN (list child))))
 
                     ; DFID - add to start of OPEN list (stack)
-                    ((eq type 'dfid) (setf OPEN (cons child OPEN)))
+                    ((eq type 'dfid)
+                        ; check if node within depth bound
+                        ( if ( < ( node-depth child ) bound )
+                            ; if within depth bound, add to open list
+                            (setf OPEN (cons child OPEN))                    
+                            
+                            ; else do not add to open list or track statistics
+                            ( let ()
+                                ( setf *NUM_GEN* ( 1- *NUM_GEN* ) )
+                                ( setf *NUM_DIST* ( 1- *NUM_DIST* ) )
+                            )
+                        )
+                    )
 
                     ; error handling for incorrect usage
                     (t (format t "SEARCH: bad search type! ~s~%" type) (return nil))
