@@ -1,11 +1,26 @@
+#|
+ | Program: 8-Puzzle
+ | Authors: Matt Dyke, Marcus Berger, Cassidy Vollmer
+ | Class: CSC 447 - Artificial Intelligence
+ | Instructor: Dr. Weiss
+ | Due Date: March 27, 2016
+ |
+ | Description:
+ |
+ | Input:
+ | Output:
+ | Compilation instructions: Run in CLisp on Linux or Windows
+ | Usage:
+ |#
 
-
-;------------------------------ Global Variables ------------------------------;
+;;------------------------------ Global Variables ------------------------------;
 
 ( defvar *NUM_GEN* )      ;Number of total nodes that were generated
 ( defvar *NUM_DIST* )     ;Number of distinct nodes that were generated
 ( defvar *NUM_EXP* )      ;Number of total nodes that were expanded
 
+
+;--------------------------------- Functions ----------------------------------;
 
 ( defun 8puzzle ( &optional ( puzzle nil ) )
     ;Load program files
