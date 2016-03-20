@@ -226,6 +226,12 @@
     ;Print results heading
     ( format t "BFS Graph Search~%" )
     ( format t "----------------~%" )
+    ( format t "Solution found in ~d moves~%" ( length path ) )
+    ( format t "~d nodes generated (~d distinct nodes), ~d nodes expanded~%"
+        *NUM_GEN*
+        *NUM_DIST*
+        *NUM_EXP*
+    )
     
     ;Call helper function to replace 0's in solution with spaces for output
     ( removeZeros path )

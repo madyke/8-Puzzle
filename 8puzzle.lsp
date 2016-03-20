@@ -1,7 +1,20 @@
+
+
+;------------------------------ Global Variables ------------------------------;
+
+( defvar *NUM_GEN* )      ;Number of total nodes that were generated
+( defvar *NUM_DIST* )     ;Number of distinct nodes that were generated
+( defvar *NUM_EXP* )      ;Number of total nodes that were expanded
+
+
 ( defun 8puzzle ( &optional ( puzzle nil ) )
     ;Load program files
     ( load 'search)
     ( load 'utilities )
+    
+    (setf *NUM_GEN* 0)
+    (setf *NUM_DIST* 0 )
+    (setf *NUM_EXP* 0 )
 	
 	(cond
 		((equal puzzle nil)
