@@ -272,10 +272,8 @@
  |   path - Solution path containing puzzle states
  |
  |#
-( defun printBFSResults ( path )
+( defun printSearchResults ( path )
     ;Print results heading
-    ( format t "BFS Graph Search~%" )
-    ( format t "----------------~%" )
     ( format t "Solution found in ~d moves~%" ( - ( length path ) 1 ) )
     ( format t "~d nodes generated (~d distinct nodes), ~d nodes expanded~%~%"
         *NUM_GEN*

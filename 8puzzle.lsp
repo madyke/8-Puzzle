@@ -62,7 +62,19 @@
     ( setf *NUM_EXP*  0 )
     
     ;Perform BFS and print results
-    ( printBFSResults ( bfs puzzle ) )
+    ( format t "BFS Graph Search~%" )
+    ( format t "----------------~%" )
+    ( printSearchResults ( BFS puzzle ) )
+    
+    ;Reset global variables that track statistics of search    
+    ( setf *NUM_GEN*  0 )
+    ( setf *NUM_DIST* 0 )
+    ( setf *NUM_EXP*  0 )
+    
+    ;Perform DFID and print results
+    ( format t "DFID Graph Search~%" )
+    ( format t "----------------~%" )
+    ( printSearchResults ( DFID puzzle ) )
 )
 
 ;Script commands for program when run from command line

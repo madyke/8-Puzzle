@@ -36,10 +36,10 @@
 ;--------------------------------------------------------------------------
 
 ; Breadth-first-search implements the OPEN list as a QUEUE of (state parent) nodes.
-(defun bfs (start) (search_bfs_dfs start 'bfs))
+(defun BFS (start) (search_bfs_dfs ( copy-list start ) 'bfs))
 
 ; Depth-first-search implements the OPEN list as a STACK of (state parent) nodes.
-(defun dfs (start) (search_bfs_dfs start 'dfs))
+(defun DFID (start) (search_bfs_dfs ( copy-list start ) 'dfs))
 
 ; Given a start state and a search type (BFS or DFS), return a path from the start to the goal.
 (defun search_bfs_dfs (start type)
