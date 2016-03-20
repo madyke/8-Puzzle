@@ -53,6 +53,12 @@
         ( solutionFound? ( return solutionFound? ) )
         
         ;Loop body
+        ;( format t "~%~%DFID SEARCH: ~d~%" i )
+        ;( format t "~d nodes generated (~d distinct nodes), ~d nodes expanded~%~%"
+        ;    *NUM_GEN*
+        ;    *NUM_DIST*
+        ;    *NUM_EXP*
+        ;)
         ( setf solutionFound? ( search_bfs_dfs ( copy-list start ) 'dfid i ) )
     )
 )
@@ -71,7 +77,8 @@
 
         ; loop body
         (when (null OPEN) (return nil))             ; no solution
-
+        ;( format t "~%OPEN LIST~%~s~%CLOSED LIST~%~s~%" OPEN CLOSED )
+        
         ; get current node from OPEN, update OPEN and CLOSED
         (setf curNode (car OPEN))
         (setf OPEN (cdr OPEN))
@@ -87,7 +94,8 @@
             (setf child (make-node  :state child
                                     :parent (node-state curNode)
                                     :depth (1+ (node-depth curNode))))
-
+            ;( format t "CHILD: ~s~%" child )
+            
             ; increment number of generated nodes
             ( setf *NUM_GEN* ( 1+ *NUM_GEN* ) )
 
@@ -113,10 +121,10 @@
                             (setf OPEN (cons child OPEN))                    
                             
                             ; else do not add to open list or track statistics
-                            ( let ()
-                                ( setf *NUM_GEN* ( 1- *NUM_GEN* ) )
-                                ( setf *NUM_DIST* ( 1- *NUM_DIST* ) )
-                            )
+                            ;( let ()
+                            ;    ( setf *NUM_GEN* ( 1- *NUM_GEN* ) )
+                            ;    ( setf *NUM_DIST* ( 1- *NUM_DIST* ) )
+                            ;)
                         )
                     )
 

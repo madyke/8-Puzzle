@@ -69,7 +69,7 @@
     
     ;Perform DFID and print results
     ( format t "DFID Graph Search~%" )
-    ( format t "----------------~%" )
+    ( format t "-----------------~%" )
     ( printSearchResults ( DFID puzzle ) )
 )
 
