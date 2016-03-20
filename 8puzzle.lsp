@@ -35,10 +35,6 @@
     ;Load program files
     ( load 'search)
     ( load 'utilities )
-    
-    (setf *NUM_GEN* 0)
-    (setf *NUM_DIST* 0 )
-    (setf *NUM_EXP* 0 )
 	
 	(cond
 		((equal puzzle nil)

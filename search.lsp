@@ -20,8 +20,9 @@
  | Written Spring 2016 for CSC447/547 AI class.
  |
  | Modifications:
- |   3/20/16 - Added statistics to track number of generated, distinct, and
- |               expanded nodes.
+ |   3/20/2016 - Added statistics to track number of generated, distinct, and
+ |                 expanded nodes.
+ |   3/20/2016 - Altered node structure and DFS search to implement DFID.
  |
  |#
 
@@ -39,7 +40,22 @@
 (defun BFS (start) (search_bfs_dfs ( copy-list start ) 'bfs))
 
 ; Depth-first-search implements the OPEN list as a STACK of (state parent) nodes.
-(defun DFID (start) (search_bfs_dfs ( copy-list start ) 'dfid 10))
+(defun DFID (start)
+    ;Perform DFID
+    ( do
+        ;Local vars
+        ( 
+            ( i 1 ( 1+ i ) )            ;DFID depth counter
+            ( solutionFound? NIL )      ;Flag for solution found
+        )        
+        
+        ;Termination condition - bounded DFS returns solution
+        ( solutionFound? ( return solutionFound? ) )
+        
+        ;Loop body
+        ( setf solutionFound? ( search_bfs_dfs ( copy-list start ) 'dfid i ) )
+    )
+)
 
 ; Given a start state and a search type (BFS or DFID), return a path from the start to the goal.
 (defun search_bfs_dfs (start type &optional bound)
