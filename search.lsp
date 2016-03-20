@@ -20,6 +20,8 @@
  | Written Spring 2016 for CSC447/547 AI class.
  |
  | Modifications:
+ |   3/20/16 - Added statistics to track number of generated, distinct, and
+ |               expanded nodes.
  |
  |#
 
@@ -58,6 +60,9 @@
         (setf curNode (car OPEN))
         (setf OPEN (cdr OPEN))
         (setf CLOSED (cons curNode CLOSED))
+        
+        ; increment count of nodes expanded
+        ( setf *NUM_EXP* ( 1+ *NUM_EXP* ) )
 
         ; add successors of current node to OPEN
         (dolist (child (generateSuccessors (node-state curNode)))
@@ -65,9 +70,15 @@
             ; for each child node
             (setf child (make-node :state child :parent (node-state curNode)))
 
+            ; increment number of generated nodes
+            ( setf *NUM_GEN* ( 1+ *NUM_GEN* ) )
+
             ; if the node is not on OPEN or CLOSED
-            (if (and (not (member child OPEN   :test #'equal-states))
+            (when (and (not (member child OPEN   :test #'equal-states))
                      (not (member child CLOSED :test #'equal-states)))
+                
+                ; increment number of distinct nodes
+                ( setf *NUM_DIST* ( 1+ *NUM_DIST* ) )
 
                 ; add it to the OPEN list
                 (cond
