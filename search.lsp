@@ -27,8 +27,8 @@
 
 ;--------------------------------------------------------------------------
 
-; Node structure: stores state and parent.
-(defstruct node state parent)
+; Node structure: stores state, parent, and depth.
+(defstruct node state parent depth)
 
 ; Test if two nodes have the same state.
 (defun equal-states (n1 n2) (equal (node-state n1) (node-state n2)))
@@ -39,15 +39,15 @@
 (defun BFS (start) (search_bfs_dfs ( copy-list start ) 'bfs))
 
 ; Depth-first-search implements the OPEN list as a STACK of (state parent) nodes.
-(defun DFID (start) (search_bfs_dfs ( copy-list start ) 'dfs))
+(defun DFID (start) (search_bfs_dfs ( copy-list start ) 'dfid))
 
-; Given a start state and a search type (BFS or DFS), return a path from the start to the goal.
+; Given a start state and a search type (BFS or DFID), return a path from the start to the goal.
 (defun search_bfs_dfs (start type)
-    (do*                                                    ; note use of sequential DO*
-        (                                                   ; initialize local loop vars
-            (curNode (make-node :state start :parent nil))  ; current node: (start nil)
-            (OPEN (list curNode))                           ; OPEN list:    ((start nil))
-            (CLOSED nil)                                    ; CLOSED list:  ( )
+    (do*                                                             ; note use of sequential DO*
+        (                                                            ; initialize local loop vars
+            (curNode (make-node :state start :parent nil :depth 0))  ; current node: (start nil 0)
+            (OPEN (list curNode))                                    ; OPEN list:    ((start nil 0))
+            (CLOSED nil)                                             ; CLOSED list:  ( )
         )
 
         ; termination condition - return solution path when goal is found
@@ -68,7 +68,9 @@
         (dolist (child (generateSuccessors (node-state curNode)))
 
             ; for each child node
-            (setf child (make-node :state child :parent (node-state curNode)))
+            (setf child (make-node  :state child
+                                    :parent (node-state curNode)
+                                    :depth (1+ (node-depth curNode))))
 
             ; increment number of generated nodes
             ( setf *NUM_GEN* ( 1+ *NUM_GEN* ) )
@@ -86,8 +88,8 @@
                     ; BFS - add to end of OPEN list (queue)
                     ((eq type 'bfs) (setf OPEN (append OPEN (list child))))
 
-                    ; DFS - add to start of OPEN list (stack)
-                    ((eq type 'dfs) (setf OPEN (cons child OPEN)))
+                    ; DFID - add to start of OPEN list (stack)
+                    ((eq type 'dfid) (setf OPEN (cons child OPEN)))
 
                     ; error handling for incorrect usage
                     (t (format t "SEARCH: bad search type! ~s~%" type) (return nil))
