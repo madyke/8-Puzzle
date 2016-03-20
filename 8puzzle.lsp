@@ -47,8 +47,12 @@
 	
 	)
 
-    ;Debug
-    ;( printPuzzle puzzle )
+    ;Reset global variables that track statistics of search    
+    ( setf *NUM_GEN*  0 )
+    ( setf *NUM_DIST* 0 )
+    ( setf *NUM_EXP*  0 )
+    
+    ;Perform BFS and print results
     ( printBFSResults ( bfs puzzle ) )
 )
 
