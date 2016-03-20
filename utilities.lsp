@@ -103,12 +103,34 @@
     )
 )
 
+
+#|
+ | Function: printPuzzle
+ |
+ | Description: This function prints the current puzzle in a 3x3 grid
+ |
+ | Parameters:
+ |   puzzle - Current state of puzzle to print
+ |
+ |#
 ( defun printPuzzle ( puzzle )
     ( format t "~d ~d ~d~%" ( nth 0 puzzle ) ( nth 1 puzzle ) ( nth 2 puzzle ) )
     ( format t "~d ~d ~d~%" ( nth 3 puzzle ) ( nth 4 puzzle ) ( nth 5 puzzle ) )
     ( format t "~d ~d ~d~%~%" ( nth 6 puzzle ) ( nth 7 puzzle ) ( nth 8 puzzle ) )
 )
 
+
+#|
+ | Function: removeZeros
+ |
+ | Description: This function traverses the list holding all of the puzzle
+ |   states in the solution path, and replaces the zero in each state with a 
+ |   space in preparation for formatted output.
+ |
+ | Parameters:
+ |   path - Solution path containing puzzle states
+ |
+ |#
 ( defun removeZeros ( path )
     ;Loop over each state in the solution path
     ( dolist ( currStep path NIL )
@@ -116,11 +138,21 @@
         ( dotimes ( i 9 NIL )
             ;If current position is 0, replace with a space for output
             ( when ( = ( nth i  currStep ) 0 ) ( setf ( nth i  currStep ) " " ) )
-        )
-        
+        )        
     )
 )
 
+
+#|
+ | Function: printSolutionPath
+ |
+ | Description: This function prints the solution path for the puzzle in the 
+ |   specified format.
+ |
+ | Parameters:
+ |   path - Solution path containing puzzle states
+ |
+ |#
 ( defun printSolutionPath( path )
     ( cond
         ;If no path, do nothing
@@ -131,9 +163,15 @@
             ;Get steps in path
             ( let ( ( step1 ( nth 0 path ) ) )
                 ;Print remaining step
-                ( format t "~d ~d ~d~%" ( nth 0 step1 ) ( nth 1 step1 ) ( nth 2 step1 ) )
-                ( format t "~d ~d ~d~%" ( nth 3 step1 ) ( nth 4 step1 ) ( nth 5 step1 ) )
-                ( format t "~d ~d ~d~%~%" ( nth 6 step1 ) ( nth 7 step1 ) ( nth 8 step1 ) )
+                ( format t "~d ~d ~d~%" 
+                    ( nth 0 step1 ) ( nth 1 step1 ) ( nth 2 step1 )
+                )
+                ( format t "~d ~d ~d~%"
+                    ( nth 3 step1 ) ( nth 4 step1 ) ( nth 5 step1 )
+                )
+                ( format t "~d ~d ~d~%~%"
+                    ( nth 6 step1 ) ( nth 7 step1 ) ( nth 8 step1 )
+                )
             )
         )
         
@@ -158,7 +196,9 @@
         
         ;If three steps left in path
         ( ( = ( length path ) 3 )
-            ( let ( ( step1 ( nth 0 path ) ) ( step2 ( nth 1 path ) ) ( step3 ( nth 2 path ) ) )
+            ( let ( ( step1 ( nth 0 path ) )
+                    ( step2 ( nth 1 path ) )
+                    ( step3 ( nth 2 path ) ) )
                 ;Print two remaining steps
                 ( format t "~d ~d ~d          ~d ~d ~d          ~d ~d ~d~%"
                     ( nth 0 step1 ) ( nth 1 step1 ) ( nth 2 step1 )
@@ -222,6 +262,16 @@
     )
 )
 
+
+#|
+ | Function: printBFSResults
+ |
+ | Description: This function prints the results of the BFS state space search.
+ |
+ | Parameters:
+ |   path - Solution path containing puzzle states
+ |
+ |#
 ( defun printBFSResults ( path )
     ;Print results heading
     ( format t "BFS Graph Search~%" )

@@ -22,7 +22,16 @@
 
 ;--------------------------------- Functions ----------------------------------;
 
-( defun 8puzzle ( &optional ( puzzle nil ) )
+#|
+ | Function: 8puzzle
+ |
+ | Description:
+ |
+ | Parameters:
+ |   &optional ( puzzle nil ) - Starting state for puzzle
+ |
+ |#
+ ( defun 8puzzle ( &optional ( puzzle nil ) )
     ;Load program files
     ( load 'search)
     ( load 'utilities )
