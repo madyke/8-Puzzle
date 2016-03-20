@@ -187,7 +187,7 @@
                     ( nth 3 step1 ) ( nth 4 step1 ) ( nth 5 step1 )
                     ( nth 3 step2 ) ( nth 4 step2 ) ( nth 5 step2 )                    
                 )
-                ( format t "~d ~d ~d          ~d ~d ~d~%"
+                ( format t "~d ~d ~d          ~d ~d ~d~%~%"
                     ( nth 6 step1 ) ( nth 7 step1 ) ( nth 8 step1 )
                     ( nth 6 step2 ) ( nth 7 step2 ) ( nth 8 step2 )
                 )
@@ -210,7 +210,7 @@
                     ( nth 3 step2 ) ( nth 4 step2 ) ( nth 5 step2 )
                     ( nth 3 step3 ) ( nth 4 step3 ) ( nth 5 step3 )                    
                 )
-                ( format t "~d ~d ~d          ~d ~d ~d          ~d ~d ~d~%"
+                ( format t "~d ~d ~d          ~d ~d ~d          ~d ~d ~d~%~%"
                     ( nth 6 step1 ) ( nth 7 step1 ) ( nth 8 step1 )
                     ( nth 6 step2 ) ( nth 7 step2 ) ( nth 8 step2 )
                     ( nth 6 step3 ) ( nth 7 step3 ) ( nth 8 step3 )
@@ -244,7 +244,7 @@
                     ;If this row is the end of the solution path
                     ( format t "~%" )
                 )
-                ( format t "~d ~d ~d          ~d ~d ~d          ~d ~d ~d          ~d ~d ~d~%"
+                ( format t "~d ~d ~d          ~d ~d ~d          ~d ~d ~d          ~d ~d ~d~%~%"
                     ( nth 6 step1 ) ( nth 7 step1 ) ( nth 8 step1 )
                     ( nth 6 step2 ) ( nth 7 step2 ) ( nth 8 step2 )
                     ( nth 6 step3 ) ( nth 7 step3 ) ( nth 8 step3 )
@@ -254,7 +254,6 @@
             
             ;If more than four steps were left
             ( when ( > ( length path ) 4 )
-                (format t "~%")
                 ;Recurse to print remaining steps
                 ( printSolutionPath ( nthcdr 4 path ) )
             )

@@ -58,7 +58,7 @@
     ( setf *NUM_EXP*  0 )
     
     ;Perform BFS and print results
-    ( format t "BFS Graph Search~%" )
+    ( format t "~%BFS Graph Search~%" )
     ( format t "----------------~%" )
     ( printSearchResults ( BFS puzzle ) )
     
