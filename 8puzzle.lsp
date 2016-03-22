@@ -76,7 +76,7 @@
 	;Perform A* and print results
 	(format t "A* Search~%")
 	(format t "---------~%")
-	;(printSearchResults (AStar puzzle))
+	(printSearchResults (AStar puzzle))
 )
 
 ;Script commands for program when run from command line
