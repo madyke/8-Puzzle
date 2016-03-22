@@ -29,7 +29,7 @@
 ;--------------------------------------------------------------------------
 
 ; Node structure: stores state, parent, and depth.
-(defstruct node state parent depth)
+(defstruct node state parent depth hValue (fValue 100))
 
 ; Test if two nodes have the same state.
 (defun equal-states (n1 n2) (equal (node-state n1) (node-state n2)))
@@ -67,7 +67,7 @@
 (defun search_bfs_dfs (start type &optional bound)
     (do*                                                             ; note use of sequential DO*
         (                                                            ; initialize local loop vars
-            (curNode (make-node :state start :parent nil :depth 0))  ; current node: (start nil 0)
+            (curNode (make-node :state start :parent nil :depth 0 :hValue 0 :fValue 0))  ; current node: (start nil 0)
             (OPEN (list curNode))                                    ; OPEN list:    ((start nil 0))
             (CLOSED nil)                                             ; CLOSED list:  ( )
         )
@@ -93,7 +93,9 @@
             ; for each child node
             (setf child (make-node  :state child
                                     :parent (node-state curNode)
-                                    :depth (1+ (node-depth curNode))))
+                                    :depth (1+ (node-depth curNode))
+									:hValue 0
+									:fValue 0))
             ;( format t "CHILD: ~s~%" child )
             
             ; increment number of generated nodes

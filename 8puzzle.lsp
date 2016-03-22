@@ -34,7 +34,8 @@
  ( defun 8puzzle ( &optional ( puzzle nil ) )
     ;Load program files
     ( load 'search)
-    ( load 'utilities )
+    ( load 'utilities)
+	( load 'AStar)
 	
 	(cond
 		((equal puzzle nil)
@@ -71,6 +72,11 @@
     ( format t "DFID Graph Search~%" )
     ( format t "-----------------~%" )
     ( printSearchResults ( DFID puzzle ) )
+	
+	;Perform A* and print results
+	(format t "A* Search~%")
+	(format t "---------~%")
+	;(printSearchResults (AStar puzzle))
 )
 
 ;Script commands for program when run from command line
