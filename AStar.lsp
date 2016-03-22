@@ -160,48 +160,54 @@
 
 (defun manhattan (state)
 ;  ( 1 2 3 8 0 4 7 6 5 )
-(let (rowList rowState sum row col is at curc curr pair)
-	#|(setf rowOne '(1 2 3))
-	(setf rowTwo '(8 0 4))
-	(setf rowThree '(7 6 5))
-	(setf rowList (list rowOne rowTwo rowThree))
+(let (rowList rowState sum row col is at curc curr pair count)
 	
-	(setf rowOne (list (nth 0 state) (nth 1 state) (nth 2 state)))
-	(setf rowTwo (list (nth 3 state) (nth 4 state) (nth 5 state)))
-	(setf rowThree (list (nth 6 state) (nth 7 state) (nth 8 state)))
-	(setf rowState (list rowOne rowTwo rowThree)) |#
-	
-	
+	(setf sum 0)
+	(setf count 0)
 	(setf rowList '( 1 2 3 8 0 4 7 6 5 ))
 	(setf rowState state)
 	(setf curc 1)
 	(setf curr 1)
 	
 	(dolist (i rowState)
-		
+		(incf count)
 		(setf row 1)
 		(setf col 1)
+		;(format t "col row ~s ~s~%" col row)
 		(dolist (j rowList)
 			(when (= i j)
+				(setf is nil)
 				(setf is (list col row))
+				(setf at nil)
 				(setf at (list curc curr))
 				(setf pair (mapcar #'abs (mapcar #'- is at)))
-				(setf sum (+ sum (+ (car pair) (cdr pair))))
+				(setf sum (+ sum (+ (car pair) (car (cdr pair)))))
+				(return)
+				
 				
 				
 			)
-			(when (= (mod col 3))
+			(when (= (mod col 3) 0)
 				(setf col 0)
 				(incf row)
 			)
-			(1+ col)
+			(when (= (mod row 4) 0)
+				(setf row 1)
+			)
+			(incf col)
 			
 		)
+		
 		(when (= curc 3)
 			(setf curc 0)
 			(incf curr)
 		)
 		(incf curc)
+		(when (= count (length state))
+		
+			(return-from manhattan sum)
+		
+		)
 	)
 )
 )
