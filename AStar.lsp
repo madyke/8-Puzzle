@@ -1,4 +1,14 @@
 ; Node structure: stores state, parent, depth, hValue, and FValue.
+#|
+ | Function: AStar
+ |
+ | Description:
+ | Runs all the different A* methods
+ |
+ | Parameters:
+ | start - Starting state
+ |
+ |#
 (defun AStar (start) 
 	(format t "A* Search (Hamming)~%")
 	(format t "-------------------~%")
@@ -26,6 +36,16 @@
 
 )
 
+#|
+ | Function: doAStar
+ |
+ | Description:
+ |	execute the A* algorithm using the passed in function as the h(n) 
+ | Parameters:
+ |   start - the start state 
+ |   func - the heuristic function
+ |
+ |#
 ; Given a start state and a search type (A*), return a path from the start to the goal.
 (defun doAStar (start func)
     (do*                                                             ; note use of sequential DO*
@@ -66,9 +86,8 @@
 									:fValue 0
 						)
 			)
-			;( format t "CHILD: ~s FValue: ~s~%" (node-depth child) (node-hValue child))
+			; calculate nodes fValue f(n) = tree depth + heuristic value
 			(setf (node-fValue child) (+ (node-depth child) (node-hValue child)))
-            ;( format t "CHILD: ~s FValue: ~s~%" child (node-fValue child))
             
             ; increment number of generated nodes
             (setf *NUM_GEN* ( 1+ *NUM_GEN* ) )
@@ -82,8 +101,7 @@
                 (when (< (node-fValue child) (node-fValue oldNode))
 
                     ; A - add to end of OPEN list (queue)
-					(format t "here~%")
-					(setf OPEN (remove oldNode 'OPEN :test #'equal-states))
+					(setf OPEN (remove oldNode OPEN :test #'equal-states))
 					(setf OPEN (append OPEN (list child)))
 					( setf *NUM_GEN* ( 1- *NUM_GEN* ) )
 				)
@@ -101,8 +119,7 @@
 
                     ; remove from old CLOSED and add to child OPEN list
                     ((< (node-fValue child) (node-fValue oldNode))
-						(format t "closed here~%")
-						(setf CLOSED (remove oldNode 'CLOSED :test #'equal-states))
+						(setf CLOSED (remove oldNode CLOSED :test #'equal-states))
 						(setf OPEN (append OPEN (list child)))
 						( setf *NUM_GEN* ( 1- *NUM_GEN* ) )
 					)
@@ -129,6 +146,16 @@
     )
 )
 
+#|
+ | Function: sortOpen
+ |
+ | Description: places the node with the lowest
+ | f(n) value at the front of the open list.
+ |
+ | Parameters:
+ |   OPEN - the open list of nodes
+ |
+ |#
 (defun sortOpen (OPEN)
 (let (lowest)
 	(setf lowest (car OPEN))
@@ -142,7 +169,17 @@
 )
 )
 
-
+#|
+ | Function: tilesOutOfPlace
+ |
+ | Description:
+ |  Counts the number of tiles out of place in
+ |  the passed in state when compared to the goal
+ |  
+ | Parameters:
+ |   state- current state of the puzzle
+ |
+ |#
 (defun tilesOutOfPlace (state)
 ; ( 1 2 3 8 0 4 7 6 5 )
 	(let (count)
@@ -180,52 +217,62 @@
 	)
 )
 
+#|
+ | Function: manhattan
+ |
+ | Description:
+ |  heuristic function that measures the distance a tile is from
+ |  its goal position and totals the valuess into a sum
+ |
+ | Parameters:
+ |   state - current state of the puzzle
+ |
+ |#
 (defun manhattan (state)
 ;  ( 1 2 3 8 0 4 7 6 5 )
 (let (rowList rowState sum row col is at curc curr pair count)
 	
 	(setf sum 0)
-	(setf count 0)
-	(setf rowList '( 1 2 3 8 0 4 7 6 5 ))
+	(setf count 0) ; when to stop
+	(setf rowList '( 1 2 3 8 0 4 7 6 5 )) ; goal state
 	(setf rowState state)
-	(setf curc 1)
-	(setf curr 1)
+	(setf curc 1) ; current column in state
+	(setf curr 1) ; current row in state
 	
 	(dolist (i rowState)
 		(incf count)
-		(setf row 1)
-		(setf col 1)
-		;(format t "col row ~s ~s~%" col row)
-		(dolist (j rowList)
-			(when (= i j)
+		(setf row 1) ; current row in goal state
+		(setf col 1) ; current column in goal state
+		(dolist (j rowList) ; parse the list until matching element found
+			(when (= i j) ; when found subtract col and row to get distance from actual
 				(setf is nil)
 				(setf is (list col row))
 				(setf at nil)
 				(setf at (list curc curr))
-				(setf pair (mapcar #'abs (mapcar #'- is at)))
-				(setf sum (+ sum (+ (car pair) (car (cdr pair)))))
+				(setf pair (mapcar #'abs (mapcar #'- is at))) ; distance between tiles
+				(setf sum (+ sum (+ (car pair) (car (cdr pair)))))  ; add to sum
 				(return)
 				
 				
 				
 			)
-			(when (= (mod col 3) 0)
+			(when (= (mod col 3) 0) ; every three columns reset and add 1 to row
 				(setf col 0)
 				(incf row)
 			)
-			(when (= (mod row 4) 0)
+			(when (= (mod row 4) 0) ; after rows processed reset
 				(setf row 1)
 			)
 			(incf col)
 			
 		)
 		
-		(when (= curc 3)
+		(when (= curc 3) ; same process for state columns
 			(setf curc 0)
 			(incf curr)
 		)
 		(incf curc)
-		(when (= count (length state))
+		(when (= count (length state)) ; when tile count = total tiles return
 		
 			(return-from manhattan sum)
 		
@@ -234,32 +281,52 @@
 )
 )
 
+#|
+ | Function: nilsson
+ |
+ | Description:
+ |  inadmissible heuristic function:
+ |  h(n) = P(n) + 3S(n)
+ |
+ |  P(n) is the Manhattan Distance of each tile from its proper position.
+ |  S(n) is the sequence score obtained by checking around the non-central squares in turn,
+ |  allotting 2 for every tile not followed by its proper successor and 1 
+ |  in case that the center is not empty. 
+ |
+ | Parameters:
+ |   state - current state of the puzzle
+ |
+ |#
 (defun nilsson (state)
 (let (goal MDist actual sum next)
+	;h(n) = p(n) + 3s(n)
 	(setf sum 0)
 	(setf goal '( 1 2 3 8 0 4 7 6 5 ))
-	(setf MDist (manhattan state))
-	(setf actual 0)
-	(setf next 0)
+	(setf MDist (manhattan state)) ;get manhattan dist. (p(n))
+	(setf actual 0) ; what next tile should be (goal)
+	(setf next 0) ; what next tile is in passed in state
 	
-	(dolist (val state)
-		(setf next (second (member val state)))
-		(when (equal next nil)
+	(dolist (val state) ; for each number in state
+		(setf next (second (member val state))) ; get next value
+		(when (equal next nil) ; when at end of list handle "nil not a number error"
 			(setf next (length state))
 		)
-		(setf actual (second (member val goal)))
-		(when (equal actual nil)
+		(setf actual (second (member val goal))) ; find value in goal and get following number
+		(when (equal actual nil) ; handle nil
 			(setf actual (length state))
 		)
-		(when (and (= next 0) (not (= actual 0)))
+		(when (and (= next 0) (not (= actual 0))) ; if zero is in the wrong spot add one to sum
 			(incf sum)
 		)
-		(when (not (= next actual))
+		(when (not (= next actual)) ; if the next sequential tile is not correct add two to sum
 			(setf sum (+ sum 2))
 		)
 	
 	)
+	; sum = s(n)
+	(setf sum (+ (* sum 3) MDist))
 	
+	;sum = h(n) return
 	(return-from nilsson sum)
 	
 
