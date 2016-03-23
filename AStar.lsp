@@ -86,6 +86,7 @@
 									:fValue 0
 						)
 			)
+			; calculate nodes fValue f(n) = tree depth + heuristic value
 			(setf (node-fValue child) (+ (node-depth child) (node-hValue child)))
             
             ; increment number of generated nodes
@@ -232,47 +233,46 @@
 (let (rowList rowState sum row col is at curc curr pair count)
 	
 	(setf sum 0)
-	(setf count 0)
-	(setf rowList '( 1 2 3 8 0 4 7 6 5 ))
+	(setf count 0) ; when to stop
+	(setf rowList '( 1 2 3 8 0 4 7 6 5 )) ; goal state
 	(setf rowState state)
-	(setf curc 1)
-	(setf curr 1)
+	(setf curc 1) ; current column in state
+	(setf curr 1) ; current row in state
 	
 	(dolist (i rowState)
 		(incf count)
-		(setf row 1)
-		(setf col 1)
-		;(format t "col row ~s ~s~%" col row)
-		(dolist (j rowList)
-			(when (= i j)
+		(setf row 1) ; current row in goal state
+		(setf col 1) ; current column in goal state
+		(dolist (j rowList) ; parse the list until matching element found
+			(when (= i j) ; when found subtract col and row to get distance from actual
 				(setf is nil)
 				(setf is (list col row))
 				(setf at nil)
 				(setf at (list curc curr))
-				(setf pair (mapcar #'abs (mapcar #'- is at)))
-				(setf sum (+ sum (+ (car pair) (car (cdr pair)))))
+				(setf pair (mapcar #'abs (mapcar #'- is at))) ; distance between tiles
+				(setf sum (+ sum (+ (car pair) (car (cdr pair)))))  ; add to sum
 				(return)
 				
 				
 				
 			)
-			(when (= (mod col 3) 0)
+			(when (= (mod col 3) 0) ; every three columns reset and add 1 to row
 				(setf col 0)
 				(incf row)
 			)
-			(when (= (mod row 4) 0)
+			(when (= (mod row 4) 0) ; after rows processed reset
 				(setf row 1)
 			)
 			(incf col)
 			
 		)
 		
-		(when (= curc 3)
+		(when (= curc 3) ; same process for state columns
 			(setf curc 0)
 			(incf curr)
 		)
 		(incf curc)
-		(when (= count (length state))
+		(when (= count (length state)) ; when tile count = total tiles return
 		
 			(return-from manhattan sum)
 		
@@ -299,31 +299,34 @@
  |#
 (defun nilsson (state)
 (let (goal MDist actual sum next)
+	;h(n) = p(n) + 3s(n)
 	(setf sum 0)
 	(setf goal '( 1 2 3 8 0 4 7 6 5 ))
-	(setf MDist (manhattan state))
-	(setf actual 0)
-	(setf next 0)
+	(setf MDist (manhattan state)) ;get manhattan dist. (p(n))
+	(setf actual 0) ; what next tile should be (goal)
+	(setf next 0) ; what next tile is in passed in state
 	
-	(dolist (val state)
-		(setf next (second (member val state)))
-		(when (equal next nil)
+	(dolist (val state) ; for each number in state
+		(setf next (second (member val state))) ; get next value
+		(when (equal next nil) ; when at end of list handle "nil not a number error"
 			(setf next (length state))
 		)
-		(setf actual (second (member val goal)))
-		(when (equal actual nil)
+		(setf actual (second (member val goal))) ; find value in goal and get following number
+		(when (equal actual nil) ; handle nil
 			(setf actual (length state))
 		)
-		(when (and (= next 0) (not (= actual 0)))
+		(when (and (= next 0) (not (= actual 0))) ; if zero is in the wrong spot add one to sum
 			(incf sum)
 		)
-		(when (not (= next actual))
+		(when (not (= next actual)) ; if the next sequential tile is not correct add two to sum
 			(setf sum (+ sum 2))
 		)
 	
 	)
+	; sum = s(n)
 	(setf sum (+ (* sum 3) MDist))
 	
+	;sum = h(n) return
 	(return-from nilsson sum)
 	
 
