@@ -1,11 +1,36 @@
 ; Node structure: stores state, parent, depth, hValue, and FValue.
-(defun AStar (start) (doAStar ( copy-list start ) 'A))
+(defun AStar (start) 
+	(format t "A* Search (Hamming)~%")
+	(format t "-------------------~%")
+	(printSearchResults (doAStar ( copy-list start ) #'tilesOutOfPlace))
+	
+	;Reset global variables that track statistics of search    
+    ( setf *NUM_GEN*  0 )
+    ( setf *NUM_DIST* 0 )
+    ( setf *NUM_EXP*  0 )
+	
+	(format t "A* Search (Mangattan)~%")
+	(format t "---------------------~%")
+	(printSearchResults (doAStar ( copy-list start ) #'manhattan))
+	
+	;Reset global variables that track statistics of search    
+    ( setf *NUM_GEN*  0 )
+    ( setf *NUM_DIST* 0 )
+    ( setf *NUM_EXP*  0 )
+	
+	(format t "A* Search (Nilsson's Sequence - inadmissible)~%")
+	(format t "---------------------------------------------~%")
+	(doAStar ( copy-list start ) #'nilsson)
+	
+
+
+)
 
 ; Given a start state and a search type (A*), return a path from the start to the goal.
-(defun doAStar (start type)
+(defun doAStar (start func)
     (do*                                                             ; note use of sequential DO*
         (                                                            ; initialize local loop vars
-            (curNode (make-node :state start :parent nil :depth 0 :hValue (tilesOutOfPlace start) :fValue (tilesOutOfPlace start) ))  ; current node: (start nil 0)
+            (curNode (make-node :state start :parent nil :depth 0 :hValue (funcall func start) :fValue (funcall func start) ))  ; current node: (start nil 0)
 
             (OPEN (list curNode))                                    ; OPEN list:    ((start nil 0))
             (CLOSED nil)                                             ; CLOSED list:  ( )
@@ -37,7 +62,7 @@
             (setf child (make-node  :state child
                                     :parent (node-state curNode)
                                     :depth (1+ (node-depth curNode))
-									:hValue (tilesOutOfPlace child)
+									:hValue (funcall func child)
 									:fValue 0
 						)
 			)
@@ -94,14 +119,11 @@
                 ( setf *NUM_DIST* ( 1+ *NUM_DIST* ) )
 
                 ; add it to the OPEN list
-                (cond
+                
 
-                    ; A - add to end of OPEN list (queue)
-                    ((eq type 'A) (setf OPEN (append OPEN (list child))))
-
-                    ; error handling for incorrect usage
-                    (t (format t "SEARCH: bad search type! ~s~%" type) (return nil))
-                )
+                ; A - add to end of OPEN list (queue)
+                (setf OPEN (append OPEN (list child)))
+                
             )
         )
     )
@@ -209,5 +231,38 @@
 		
 		)
 	)
+)
+)
+
+(defun nilsson (state)
+(let (goal MDist actual sum next)
+	(setf sum 0)
+	(setf goal '( 1 2 3 8 0 4 7 6 5 ))
+	(setf MDist (manhattan state))
+	(setf actual 0)
+	(setf next 0)
+	
+	(dolist (val state)
+		(setf next (second (member val state)))
+		(when (equal next nil)
+			(setf next (length state))
+		)
+		(setf actual (second (member val goal)))
+		(when (equal actual nil)
+			(setf actual (length state))
+		)
+		(when (and (= next 0) (not (= actual 0)))
+			(incf sum)
+		)
+		(when (not (= next actual))
+			(setf sum (+ sum 2))
+		)
+	
+	)
+	
+	(return-from nilsson sum)
+	
+
+
 )
 )

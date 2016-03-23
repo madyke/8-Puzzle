@@ -73,9 +73,12 @@
     ( format t "-----------------~%" )
     ( printSearchResults ( DFID puzzle ) )
 	
+	;Reset global variables that track statistics of search    
+    ( setf *NUM_GEN*  0 )
+    ( setf *NUM_DIST* 0 )
+    ( setf *NUM_EXP*  0 )
+	
 	;Perform A* and print results
-	(format t "A* Search~%")
-	(format t "---------~%")
 	(printSearchResults (AStar puzzle))
 )
 
