@@ -1,105 +1,131 @@
+#|
+ | Function: generateSuccessors
+ |
+ | Description: This function generates the successors of
+ | the current state of the puzzle.
+ |
+ | Parameters:
+ |   L - current state for the puzzle
+ |
+ |#
 (defun generateSuccessors (L)
     (let (p q r s openList)
         (cond
-            ((= (nth 0 L) 0)
-                    (setf p (copy-list L) )
-                    (rotatef (nth 1 p) (nth 0 p) )
-                    (setf q (copy-list L) )
-                    (rotatef (nth 3 q) (nth 0 q) )
-                    (push p openList)
-                    (push q openList)
+            ((= (nth 0 L) 0)	; if the blank is in the top left
+                    (setf p (copy-list L) )	; make copy of list
+                    (rotatef (nth 1 p) (nth 0 p) )	; move right
+                    (setf q (copy-list L) )	; make copy of list
+                    (rotatef (nth 3 q) (nth 0 q) )	; move down
+                    (push p openList)	; add new state to list
+                    (push q openList)	; add new state to list
             )
             ((= (nth 1 L) 0) 
-                    (setf p (copy-list L) )
-                    (rotatef (nth 0 p) (nth 1 p) )
-                    (setf q (copy-list L) )
-                    (rotatef (nth 2 q) (nth 1 q) )
-                    (setf r (copy-list L) )
-                    (rotatef (nth 4 r) (nth 1 r) )
-                    (push p openList)
-                    (push q openList)
-                    (push r openList)
+                    (setf p (copy-list L) )	; make copy of list
+                    (rotatef (nth 0 p) (nth 1 p) )	; move right
+                    (setf q (copy-list L) )	; make copy of list
+                    (rotatef (nth 2 q) (nth 1 q) )	; move left
+                    (setf r (copy-list L) )	; make copy of list
+                    (rotatef (nth 4 r) (nth 1 r) )	; move down
+                    (push p openList)	; add new state to list
+                    (push q openList)	; add new state to list
+                    (push r openList)	; add new state to list
             )
             ((= (nth 2 L) 0)
-                    (setf p (copy-list L) )	
-                    (rotatef (nth 1 p) (nth 2 p) )
-                    (setf q (copy-list L) )
-                    (rotatef (nth 5 q) (nth 2 q) )
-                    (push p openList)
-                    (push q openList)
+                    (setf p (copy-list L) )	; make copy of list
+                    (rotatef (nth 1 p) (nth 2 p) )	; move left
+                    (setf q (copy-list L) )	; make copy of list
+                    (rotatef (nth 5 q) (nth 2 q) )	; move down
+                    (push p openList)	; add new state to list
+                    (push q openList)	; add new state to list
             )
             ((= (nth 3 L) 0)
-                    (setf p (copy-list L) )
-                    (rotatef (nth 0 p) (nth 3 p) )
-                    (setf q (copy-list L) )
-                    (rotatef (nth 4 q) (nth 3 q) )
-                    (setf r (copy-list L) )
-                    (rotatef (nth 6 r) (nth 3 r) )
-                    (push p openList)
-                    (push q openList)
-                    (push r openList)
+                    (setf p (copy-list L) )	; make copy of list
+                    (rotatef (nth 0 p) (nth 3 p) )	; move up
+                    (setf q (copy-list L) )	; make copy of list
+                    (rotatef (nth 4 q) (nth 3 q) )	; move right
+                    (setf r (copy-list L) )	; make copy of list
+                    (rotatef (nth 6 r) (nth 3 r) )	; move down
+                    (push p openList)	; add new state to list
+                    (push q openList)	; add new state to list
+                    (push r openList)	; add new state to list
             )
             ((= (nth 4 L) 0)
-                    (setf p (copy-list L) )
-                    (rotatef (nth 1 p) (nth 4 p) )
-                    (setf q (copy-list L) )
-                    (rotatef (nth 3 q) (nth 4 q) )
-                    (setf r (copy-list L) )
-                    (rotatef (nth 5 r) (nth 4 r) )
-                    (setf s (copy-list L) )
-                    (rotatef (nth 7 s) (nth 4 s) )
-                    (push p openList)
-                    (push q openList)
-                    (push r openList)
-                    (push s openList)
+                    (setf p (copy-list L) )	; make copy of list
+                    (rotatef (nth 1 p) (nth 4 p) )	; move up
+                    (setf q (copy-list L) )	; make copy of list
+                    (rotatef (nth 3 q) (nth 4 q) )	; move left
+                    (setf r (copy-list L) )	; make copy of list
+                    (rotatef (nth 5 r) (nth 4 r) )	; move right
+                    (setf s (copy-list L) )	; make copy of list
+                    (rotatef (nth 7 s) (nth 4 s) )	; move down
+                    (push p openList)	; add new state to list
+                    (push q openList)	; add new state to list
+                    (push r openList)	; add new state to list
+                    (push s openList)	; add new state to list
             )
             ((= (nth 5 L) 0)
-                    (setf p (copy-list L) )
-                    (rotatef (nth 2 p) (nth 5 p) )
-                    (setf q (copy-list L) )
-                    (rotatef (nth 4 q) (nth 5 q) )
+                    (setf p (copy-list L) )	; make copy of list
+                    (rotatef (nth 2 p) (nth 5 p) )	; move up
+                    (setf q (copy-list L) )	; make copy of list
+                    (rotatef (nth 4 q) (nth 5 q) )	; move left
                     (append openList p)
-                    (setf r (copy-list L) )
-                    (rotatef (nth 8 r) (nth 5 r) )
-                    (push p openList)
-                    (push q openList)
-                    (push r openList)
+                    (setf r (copy-list L) )	; make copy of list
+                    (rotatef (nth 8 r) (nth 5 r) )	; move down
+                    (push p openList)	; add new state to list
+                    (push q openList)	; add new state to list
+                    (push r openList)	; add new state to list
             )
             ((= (nth 6 L) 0)
-                    (setf p (copy-list L) )
-                    (rotatef (nth 3 p) (nth 6 p) )
+                    (setf p (copy-list L) )	; make copy of list
+                    (rotatef (nth 3 p) (nth 6 p) )	; move up
                     (append openList p)
-                    (setf q (copy-list L) )
-                    (rotatef (nth 7 q) (nth 6 q) )
-                    (push p openList)
-                    (push q openList)
+                    (setf q (copy-list L) )	; make copy of list
+                    (rotatef (nth 7 q) (nth 6 q) )	; move right
+                    (push p openList)	; add new state to list
+                    (push q openList)	; add new state to list
             )
             ((= (nth 7 L) 0)
-                    (setf p (copy-list L) )
-                    (rotatef (nth 6 p) (nth 7 p) )
-                    (setf q (copy-list L) )
-                    (rotatef (nth 4 q) (nth 7 q) )
-                    (setf r (copy-list L) )
-                    (rotatef (nth 8 r) (nth 7 r) )
-                    (push p openList)
-                    (push q openList)
-                    (push r openList)
+                    (setf p (copy-list L) )	; make copy of list
+                    (rotatef (nth 6 p) (nth 7 p) )	; move left
+                    (setf q (copy-list L) )	; make copy of list
+                    (rotatef (nth 4 q) (nth 7 q) )	; move up
+                    (setf r (copy-list L) )	; make copy of list
+                    (rotatef (nth 8 r) (nth 7 r) )	; move right
+                    (push p openList)	; add new state to list
+                    (push q openList)	; add new state to list
+                    (push r openList)	; add new state to list
             )
             ((= (nth 8 L) 0)
-                    (setf p (copy-list L) )
-                    (rotatef (nth 5 p) (nth 8 p) )
-                    (setf q (copy-list L) )
-                    (rotatef (nth 7 q) (nth 8 q) )
-                    (push p openList)
-                    (push q openList)
+                    (setf p (copy-list L) )	; make copy of list
+                    (rotatef (nth 5 p) (nth 8 p) )	; move up
+                    (setf q (copy-list L) )	; make copy of list
+                    (rotatef (nth 7 q) (nth 8 q) )	; move left
+                    (push p openList)	; add new state to list
+                    (push q openList)	; add new state to list
             )
         )
     )
 )
+
+#|
+ | Function: goalState?
+ |
+ | Description: This funciton determines if the current puzzle
+ | is the goal state. Below is the goal state for the 8 puzzle.
+ |
+ | 8-puzzle	
+ | 1  2  3
+ | 8  0  4
+ | 7  6  5
+ |
+ | Parameters:
+ |   L - current state for the puzzle
+ |
+ |#
 (defun goalState? (L)
     (let (g)
-        (setf g '( 1 2 3 8 0 4 7 6 5 ) )
-        (if (equal L g) t nil)
+        (setf g '( 1 2 3 8 0 4 7 6 5 ) )	; set the goal state
+        (if (equal L g) t nil)	; check if current state is the goal state
     )
 )
 
