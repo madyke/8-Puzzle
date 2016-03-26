@@ -9,10 +9,13 @@
  | start - Starting state
  |
  |#
-(defun AStar (start) 
+(defun AStar (start)
+(let (goal)
+
+	(setf goal (getGoal start))
 	(format t "A* Search (Hamming)~%")
 	(format t "-------------------~%")
-	(printSearchResults (doAStar ( copy-list start ) #'tilesOutOfPlace))
+	(printSearchResults (doAStar ( copy-list start ) #'tilesOutOfPlace goal))
 	
 	;Reset global variables that track statistics of search    
     ( setf *NUM_GEN*  0 )
@@ -21,7 +24,7 @@
 	
 	(format t "A* Search (Mangattan)~%")
 	(format t "---------------------~%")
-	(printSearchResults (doAStar ( copy-list start ) #'manhattan))
+	(printSearchResults (doAStar ( copy-list start ) #'manhattan goal))
 	
 	;Reset global variables that track statistics of search    
     ( setf *NUM_GEN*  0 )
@@ -30,10 +33,10 @@
 	
 	(format t "A* Search (Nilsson's Sequence - inadmissible)~%")
 	(format t "---------------------------------------------~%")
-	(doAStar ( copy-list start ) #'nilsson)
+	(doAStar ( copy-list start ) #'nilsson goal)
 	
 
-
+)
 )
 
 #|
@@ -47,10 +50,10 @@
  |
  |#
 ; Given a start state and a search type (A*), return a path from the start to the goal.
-(defun doAStar (start func)
+(defun doAStar (start func goal)
     (do*                                                             ; note use of sequential DO*
         (                                                            ; initialize local loop vars
-            (curNode (make-node :state start :parent nil :depth 0 :hValue (funcall func start) :fValue (funcall func start) ))  ; current node: (start nil 0)
+            (curNode (make-node :state start :parent nil :depth 0 :hValue (funcall func start goal) :fValue (funcall func start goal) ))  ; current node: (start nil 0)
 
             (OPEN (list curNode))                                    ; OPEN list:    ((start nil 0))
             (CLOSED nil)                                             ; CLOSED list:  ( )
@@ -82,7 +85,7 @@
             (setf child (make-node  :state child
                                     :parent (node-state curNode)
                                     :depth (1+ (node-depth curNode))
-									:hValue (funcall func child)
+									:hValue (funcall func child goal)
 									:fValue 0
 						)
 			)
@@ -180,39 +183,16 @@
  |   state- current state of the puzzle
  |
  |#
-(defun tilesOutOfPlace (state)
-; ( 1 2 3 8 0 4 7 6 5 )
+(defun tilesOutOfPlace (state goal)
+; ( 1 2 3 8 0 4 7 6 5 ) goal state for 8 puzzle
 	(let (count)
 		(setf count 0)
 		
-		(when (not (= (nth 0 state) 1))
-			(incf count)
+		(dotimes (i (length state) count)
+			(when (not (= (nth i state) (nth i goal) ) )
+				(incf count)
+			)
 		)
-		(when (not (= (nth 1 state) 2))
-			(incf count)
-		)
-		(when (not (= (nth 2 state) 3))
-			(incf count)
-		)
-		(when (not (= (nth 3 state) 8))
-			(incf count)
-		)
-		(when (not (= (nth 4 state) 0))
-			(incf count)
-		)
-		(when (not (= (nth 5 state) 4))
-			(incf count)
-		)
-		(when (not (= (nth 6 state) 7))
-			(incf count)
-		)
-		(when (not (= (nth 7 state) 6))
-			(incf count)
-		)
-		(when (not (= (nth 8 state) 5))
-			(incf count)
-		)
-		
 		(return-from tilesOutOfPlace count)
 	)
 )
@@ -228,13 +208,13 @@
  |   state - current state of the puzzle
  |
  |#
-(defun manhattan (state)
+(defun manhattan (state goal)
 ;  ( 1 2 3 8 0 4 7 6 5 )
 (let (rowList rowState sum row col is at curc curr pair count)
 	
 	(setf sum 0)
 	(setf count 0) ; when to stop
-	(setf rowList '( 1 2 3 8 0 4 7 6 5 )) ; goal state
+	(setf rowList goal) ; goal state
 	(setf rowState state)
 	(setf curc 1) ; current column in state
 	(setf curr 1) ; current row in state
@@ -256,18 +236,18 @@
 				
 				
 			)
-			(when (= (mod col 3) 0) ; every three columns reset and add 1 to row
+			(when (= (mod col *N_Cols*) 0) ; every three columns reset and add 1 to row
 				(setf col 0)
 				(incf row)
 			)
-			(when (= (mod row 4) 0) ; after rows processed reset
+			(when (= (mod row (+ *N_Rows* 1) ) 0) ; after rows processed reset
 				(setf row 1)
 			)
 			(incf col)
 			
 		)
 		
-		(when (= curc 3) ; same process for state columns
+		(when (= curc *N_Cols*) ; same process for state columns
 			(setf curc 0)
 			(incf curr)
 		)
@@ -297,12 +277,11 @@
  |   state - current state of the puzzle
  |
  |#
-(defun nilsson (state)
-(let (goal MDist actual sum next)
+(defun nilsson (state goal)
+(let (MDist actual sum next)
 	;h(n) = p(n) + 3s(n)
 	(setf sum 0)
-	(setf goal '( 1 2 3 8 0 4 7 6 5 ))
-	(setf MDist (manhattan state)) ;get manhattan dist. (p(n))
+	(setf MDist (manhattan state goal)) ;get manhattan dist. (p(n))
 	(setf actual 0) ; what next tile should be (goal)
 	(setf next 0) ; what next tile is in passed in state
 	
@@ -329,7 +308,59 @@
 	;sum = h(n) return
 	(return-from nilsson sum)
 	
-
-
 )
+)
+
+#|
+ | Function: getGoal
+ |
+ | Description:
+ | returns a list of the goal state
+ |
+ | Parameters:
+ |   L - current state of the puzzle
+ |
+ |#
+(defun getGoal (L)  
+    (let (g)
+		(cond
+			((= (length L) 9)	; if this is an 8 puzzle
+				(setf g '( 1 2 3 8 0 4 7 6 5 ) ) ; set the goal state
+			)
+			((= (length L) 16)	; if this is a 15 puzzle
+				(setf g '( 1 2 3 4 12 13 14 5 11 0 15 6 10 9 8 7 ) )	; set the goal state
+			)
+			((= (length L) 25)	; if this is a 24 puzzle
+				(setf g '( 1 2 3 4 5 16 17 18 19 6 15 24 0 20 7 14 23 22 21 8 13 12 11 10 9 ) ) ; set the goal state
+			)
+		)
+		
+		(return-from getGoal g)
+    )
+)
+
+#|
+ | Function: getSize
+ |
+ | Description:
+ |  finds and returns the demension of the puzzle
+ |  
+ | Parameters:
+ |   puzzle - current state of the puzzle
+ |
+ |#
+(defun getSize (puzzle)  
+    (let (size)
+		(dotimes (i (length puzzle) size)
+			(when (not (equal i 0))
+				(when (equal (* i i) (length puzzle))
+					(setf *N_Rows* i)
+					(setf *N_Cols* i)
+					(setf size i)
+					(return-from getSize size)
+				)
+			)
+		)
+		(format t "Error please provide n x n puzzle")
+    )
 )
