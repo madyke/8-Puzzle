@@ -1,3 +1,13 @@
+ #|
+ | Function: getPuzzleFile
+ |
+ | Description:
+ | Gets the puzzle file from the command line
+ |
+ | Parameters:
+ | args - command line arguments
+ |
+ |#
  ( defun getPuzzleFile ( args )
     ( cond 
         ;If exactly one command line argument given
@@ -14,6 +24,16 @@
     )
 )
 
+#|
+ | Function: readPuzzleFile
+ |
+ | Description:
+ | Read in a puzzle from a file given at the command line.
+ |
+ | Parameters:
+ | filename - name of the puzzle file
+ |
+ |#
 (defun readPuzzleFile (filename)
 	(with-open-file (in filename)
 		(loop for number = (read in nil)
@@ -22,7 +42,17 @@
 		)			
 	)
 )
-
+#|
+ | Function: parseList
+ |
+ | Description:
+ | This function checks to make sure that the user inputed
+ | a usable puzzle.
+ |
+ | Parameters:
+ | puzList - Starting state
+ |
+ |#
 (defun parseList (puzList)
 	(loop for i in puzList do
 		(if (not (numberp i))		

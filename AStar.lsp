@@ -12,17 +12,9 @@
 (defun AStar (start)
 (let (goal)
 
-	; gets goal state as list of list
+	; gets goal state as list
 	(setf goal (getGoal start))
-	; combine many list into one
-	(setf goal (apply #'append goal))
 	
-	; replace nil with 0 in list
-	(dotimes (i (length goal) goal)
-		(when (equal (nth i goal) nil)
-			(setf (nth i goal) 0)
-		)
-	)
 	(format t "A* Search (Hamming)~%")
 	(format t "-------------------~%")
 	(printSearchResults (doAStar ( copy-list start ) #'tilesOutOfPlace goal))
@@ -222,7 +214,6 @@
  |
  |#
 (defun manhattan (state goal)
-;  ( 1 2 3 8 0 4 7 6 5 )
 (let (rowList rowState sum row col is at curc curr pair count)
 	
 	(setf sum 0)
@@ -249,18 +240,18 @@
 				
 				
 			)
-			(when (= (mod col *N_Cols*) 0) ; every three columns reset and add 1 to row
+			(when (= (mod col 3) 0) ; every three columns reset and add 1 to row
 				(setf col 0)
 				(incf row)
 			)
-			(when (= (mod row (+ *N_Rows* 1) ) 0) ; after rows processed reset
+			(when (= (mod row 4 ) 0) ; after rows processed reset
 				(setf row 1)
 			)
 			(incf col)
 			
 		)
 		
-		(when (= curc *N_Cols*) ; same process for state columns
+		(when (= curc 3) ; same process for state columns
 			(setf curc 0)
 			(incf curr)
 		)
@@ -329,7 +320,7 @@
  | Function: getGoal
  |
  | Description:
- | returns a list of the goal state. Later refactored for n-puzzle
+ | returns a list of the goal state. 
  |
  | Parameters:
  |   L - current state of the puzzle
@@ -338,10 +329,7 @@
 (defun getGoal (L)  
     (let (g)
 		; get spiral array and convert to a list
-		(setf g (spiral *N_Rows* *N_Cols*))
-		(setf g (loop for i below (array-dimension g 0)
-        collect (loop for j below (array-dimension g 1)
-                      collect (aref g i j))))
+		(setf g '(1 2 3 8 0 4 7 6 5))
 		(return-from getGoal g)
     )
 )
@@ -358,7 +346,7 @@
  | Parameters:
  |   L - current state of the puzzle
  |
- |#
+ 
 (defun spiral (rows columns)
   (do ((N (* rows columns))
        (spiral (make-array (list rows columns) :initial-element nil))
@@ -378,6 +366,8 @@
           (setf x (+ x dx)
                 y (+ y dy)))
 				))))
+				
+	|#
 
 #|
  | Function: getSize
@@ -388,7 +378,7 @@
  | Parameters:
  |   puzzle - current state of the puzzle
  |
- |#
+ 
 (defun getSize (puzzle)  
     (let (size)
 		(dotimes (i (length puzzle) size)
@@ -404,3 +394,4 @@
 		(format t "Error please provide n x n puzzle")
     )
 )
+|#

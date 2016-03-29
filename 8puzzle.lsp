@@ -18,8 +18,6 @@
 ( defvar *NUM_GEN* )      ;Number of total nodes that were generated
 ( defvar *NUM_DIST* )     ;Number of distinct nodes that were generated
 ( defvar *NUM_EXP* )      ;Number of total nodes that were expanded
-( defvar *N_Rows*)
-( defvar *N_Cols*)
 
 
 ;--------------------------------- Functions ----------------------------------;
@@ -60,7 +58,6 @@
     ( setf *NUM_DIST* 0 )
     ( setf *NUM_EXP*  0 )
 	
-	(getSize puzzle)
     
     ;Perform BFS and print results
     ( format t "~%BFS Graph Search~%" )
