@@ -12,7 +12,17 @@
 (defun AStar (start)
 (let (goal)
 
+	; gets goal state as list of list
 	(setf goal (getGoal start))
+	; combine many list into one
+	(setf goal (apply #'append goal))
+	
+	; replace nil with 0 in list
+	(dotimes (i (length goal) goal)
+		(when (equal (nth i goal) nil)
+			(setf (nth i goal) 0)
+		)
+	)
 	(format t "A* Search (Hamming)~%")
 	(format t "-------------------~%")
 	(printSearchResults (doAStar ( copy-list start ) #'tilesOutOfPlace goal))
@@ -47,6 +57,7 @@
  | Parameters:
  |   start - the start state 
  |   func - the heuristic function
+ |   Goal - goal state for puzzle
  |
  |#
 ; Given a start state and a search type (A*), return a path from the start to the goal.
@@ -181,6 +192,7 @@
  |  
  | Parameters:
  |   state- current state of the puzzle
+ |   Goal - goal state for puzzle
  |
  |#
 (defun tilesOutOfPlace (state goal)
@@ -206,6 +218,7 @@
  |
  | Parameters:
  |   state - current state of the puzzle
+ |   Goal - goal state for puzzle
  |
  |#
 (defun manhattan (state goal)
@@ -275,6 +288,7 @@
  |
  | Parameters:
  |   state - current state of the puzzle
+ |   Goal - goal state for puzzle
  |
  |#
 (defun nilsson (state goal)
@@ -315,7 +329,7 @@
  | Function: getGoal
  |
  | Description:
- | returns a list of the goal state
+ | returns a list of the goal state. Later refactored for n-puzzle
  |
  | Parameters:
  |   L - current state of the puzzle
@@ -323,21 +337,47 @@
  |#
 (defun getGoal (L)  
     (let (g)
-		(cond
-			((= (length L) 9)	; if this is an 8 puzzle
-				(setf g '( 1 2 3 8 0 4 7 6 5 ) ) ; set the goal state
-			)
-			((= (length L) 16)	; if this is a 15 puzzle
-				(setf g '( 1 2 3 4 12 13 14 5 11 0 15 6 10 9 8 7 ) )	; set the goal state
-			)
-			((= (length L) 25)	; if this is a 24 puzzle
-				(setf g '( 1 2 3 4 5 16 17 18 19 6 15 24 0 20 7 14 23 22 21 8 13 12 11 10 9 ) ) ; set the goal state
-			)
-		)
-		
+		; get spiral array and convert to a list
+		(setf g (spiral *N_Rows* *N_Cols*))
+		(setf g (loop for i below (array-dimension g 0)
+        collect (loop for j below (array-dimension g 1)
+                      collect (aref g i j))))
 		(return-from getGoal g)
     )
 )
+
+#|
+ | Function: spiral
+ |
+ | Author: https://rosettacode.org/wiki/Spiral_matrix#Common_Lisp 
+ |
+ | Description:
+ | returns a list of the goal state for the n-puzzle in spiral format.
+ | Taken and modified to start at one from authir above
+ |
+ | Parameters:
+ |   L - current state of the puzzle
+ |
+ |#
+(defun spiral (rows columns)
+  (do ((N (* rows columns))
+       (spiral (make-array (list rows columns) :initial-element nil))
+       (dx 1) (dy 0) (x 0) (y 0)
+       (i 1 (1+ i)))
+      ((= i N) spiral)
+    (setf (aref spiral y x) i)
+    (let ((nx (+ x dx)) (ny (+ y dy)))
+      (cond
+       ((and (< -1 nx columns)
+             (< -1 ny rows)
+             (null (aref spiral ny nx)))
+        (setf x nx
+              y ny))
+       (t (psetf dx (- dy)
+                 dy dx)
+          (setf x (+ x dx)
+                y (+ y dy)))
+				))))
 
 #|
  | Function: getSize
