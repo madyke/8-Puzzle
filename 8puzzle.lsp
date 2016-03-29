@@ -18,6 +18,8 @@
 ( defvar *NUM_GEN* )      ;Number of total nodes that were generated
 ( defvar *NUM_DIST* )     ;Number of distinct nodes that were generated
 ( defvar *NUM_EXP* )      ;Number of total nodes that were expanded
+( defvar *N_Rows*)
+( defvar *N_Cols*)
 
 
 ;--------------------------------- Functions ----------------------------------;
@@ -39,7 +41,7 @@
 	
 	(cond
 		((equal puzzle nil)
-			(format t "Please enter the start position as 9 digits 0-9 separated by white space in row major order~%")
+			(format t "Please enter the start position as 9 digits 0-8 separated by white space in row major order~%")
 			
 			(setf val (read-line)) ; get the user input
 			; loop through the string and get a list of integers and put in puzzle
@@ -57,6 +59,8 @@
     ( setf *NUM_GEN*  0 )
     ( setf *NUM_DIST* 0 )
     ( setf *NUM_EXP*  0 )
+	
+	(getSize puzzle)
     
     ;Perform BFS and print results
     ( format t "~%BFS Graph Search~%" )
