@@ -10,24 +10,13 @@
  |
  |#
 (defun moveDown (L pos)
-	(let (p openList)
-		(cond
-			((= (listLength L) 9)	;if this is an 8 puzzle
-				(setf p (copy-list L))	; make a copy of the current state
-				(rotatef (nth (+ pos 3) p) (nth pos p) )	; move blank spot down
-				(push p openList)	; add new state onto the list
-			)
-			((= (listLength L) 16)	;if this is a 15 puzzle
-				(setf p (copy-list L))	; make a copy of the current state
-				(rotatef (nth (+ pos 4) p) (nth pos p) )	; move blank spot down
-				(push p openList)	; add new state onto the list
-			)
-			((= (listLength L) 25)	; if this is a 24 puzzle
-				(setf p (copy-list L))	; make a copy of the current state
-				(rotatef (nth (+ pos 5) p) (nth pos p) )	; move blank spot down
-				(push p openList)	; add new state onto the list
-			)
-		)
+	(let (p len root openList)
+		(setf len (listLength L))	; set the length of the list
+		(setf root (sqrt len))		; set the root of this puzzle
+		(setf pos (- pos 1))		; move pos down by one
+		(setf p (copy-list L))	; make a copy of the current state
+		(rotatef (nth (+ pos root) p) (nth pos p) )	; move blank spot down
+		(push p openList)	; add new state onto the list
 	)
 )
 
@@ -44,23 +33,12 @@
  |#
 (defun moveUp (L pos)
 	(let (p openList)
-		(cond
-			((= (listLength L) 9)	; if this is an 8 puzzle
-				(setf p (copy-list L))	; make a copy of the current state
-				(rotatef (nth (- pos 3) p) (nth pos p) )	; move blank spot up
-				(push p openList)	; add new state onto the list
-			)
-			((= (listLength L) 16)	; if this is a 15 puzzle
-				(setf p (copy-list L))	; make a copy of the current state
-				(rotatef (nth (- pos 4) p) (nth pos p) )	; move blank spot up
-				(push p openList)	; add new state onto the list
-			)
-			((= (listLength L) 25)	; if this is a 24 puzzle
-				(setf p (copy-list L))	; make a copy of the current state
-				(rotatef (nth (- pos 5) p) (nth pos p) )	; move blank spot up
-				(push p openList)	; add new state onto the list
-			)
-		)
+		(setf len (listLength L))	; set the length of the list
+		(setf root (sqrt len))		; set the root of this puzzle
+		(setf pos (- pos 1))		; move pos down by one
+		(setf p (copy-list L))	; make a copy of the current state
+		(rotatef (nth (- pos root) p) (nth pos p) )	; move blank spot up
+		(push p openList)	; add new state onto the list
 	)
 )
 
@@ -78,7 +56,7 @@
 (defun moveLeft (L pos)
 	(let (p openList)
 		(setf p (copy-list L))	; make a copy of the current state
-		(rotatef (nth (- pos 1) p) (nth pos p) )	; move blank spot left
+		(rotatef (nth (- pos 2) p) (nth (- pos 1) p) )	; move blank spot left
 		(push p openList)	; add new state onto the list
 	)
 )
@@ -97,7 +75,7 @@
 (defun moveRight (L pos)
 	(let (p openList)
 		(setf p (copy-list L))	; make a copy of the current state
-		(rotatef (nth (+ pos 1) p) (nth pos p) )	; move blank spot right
+		(rotatef (nth (- pos 1) p) (nth pos p) )	; move blank spot right
 		(push p openList)	; add new state onto the list
 	)
 )
@@ -168,73 +146,27 @@
  |
  |#
 (defun generateSuccessors (L)
-	(let (pos len openList)
+	(let (pos len root openList)
 		(setf pos (position 0 L))	; set the position of zero in the list
 		(setf len (listLength L))	; set the length of the list
-		(cond
-			; if  blank is in top right, generate successors
-			((or (= pos 0))		
-					(push (moveDown L pos) openList)	; move blank down
-					(push (moveRight L pos) openList)	; move blank right
-			)
-			; if the blank is in the bottom left
-			((or (= pos 20) (and (= len 9) (= pos 6)) (and (= len 16) (= pos 12)))
-					(push (moveUp L pos) openList)	; move blank up
-					(push (moveRight L pos) openList)	; move blank right
-			)
-			; if the blank is in the top right 
-			((or (and (= len 9) (= pos 2)) 
-				 (and (= len 16) (= pos 3)) 
-				 (and (= len 25) (= pos 4)))
-					(push (moveDown L pos) openList)	; move blank down
-					(push (moveLeft L pos) openList)	; move blank left
-			)
-			; if the blank is in the bottom right 
-			((or (= pos 24) (and (= len 9) (= pos 8)) (and (= len 16) (= pos 15)))
-				(push (moveUp L pos) openList)	; move blank up
-				(push (moveLeft L pos) openList)	; move blank left
-			)
-			; if the blank is against the top of the puzzle and not in a corner
-			((or (= pos 1) (and (> len 9) (= pos 2)) (and (= len 25) (= pos 3))) 
-					(push (moveDown L pos) openList)	; move blank down
-					(push (moveRight L pos) openList)	; move blank right
-					(push (moveLeft L pos) openList)	; move blank left
-			)
-			; if the blank is against the bottom of the puzzle and not in a corner
-			((or (and (= len 9) (= pos 7)) 
-				 (and (= len 16) 
-				 (or (= pos 13) (= pos 14))))  
-					(push (moveUp L pos) openList)	; move blank up
-					(push (moveRight L pos) openList)	; move blank right
-					(push (moveLeft L pos) openList)	; move blank left
-			)
-			; if the blank is against the left side and not in a corner
-			((or (and (= len 9) (= pos 3)) 
-				 (and (= len 16) (or (= pos 4) (= pos 8))) 
-				 (and (= len 25) (or (= pos 5) (= pos 10) (= pos 15)))) 
-					(push (moveDown L pos) openList)	; move blank down
-					(push (moveRight L pos) openList)	; move blank right
-					(push (moveUp L pos) openList)	; move blank up
-			)
-			; if the blank is against the right side and not in a corner
-			((or (= pos 19) 
-				 (and (= len 9) (= pos 5)) 
-				 (and (= len 16) (or (= pos 7) (= pos 11))) 
-				 (and (= len 25) (or (= pos 9) (= pos 14)))) 
-					(push (moveDown L pos) openList)	; move blank down
-					(push (moveUp L pos) openList)	; move blank up
-					(push (moveLeft L pos) openList)	; move blank left
-			)
-			; if the blank can be moved in all four directions
-			((or (and (= len 9) (= pos 4)) 
-				 (and (= len 16) (or (= pos 5) (= pos 6) (= pos 9) (= pos 10))) 
-				 (and (= len 25) (or (= pos 7) (= pos 8) (= pos 11) (= pos 12) (= pos 13))) 
-				 (= pos 16) (= pos 17) (= pos 18)) 
-					(push (moveDown L pos) openList)	; move blank down
-					(push (moveRight L pos) openList)	; move blank right
-					(push (moveLeft L pos) openList)	; move blank left
-					(push (moveUp L pos) openList)	; move blank up
-			)
+		(setf root (sqrt len))		; calculate the root of the puzzle size
+
+		(setf pos (+ pos 1))
+		
+		(if (> pos root)		; if blank is not in top row
+			(push (moveUp L pos) openList)	; move blank up
+		)
+		
+		(if (< pos (- len root))		; if blank is not in bottom row
+			(push (moveDown L pos) openList)	; move blank down
+		)
+		
+		(if (/= 0 (mod pos root))		; if blank is not in the right most column
+			(push (moveRight L pos) openList)	; move blank right
+		)
+		
+		(if (/= 0 (mod (- pos 1) root))		; if blank is not in the left most column
+			(push (moveLeft L pos) openList)	; move blank left
 		)
 	)
 )
