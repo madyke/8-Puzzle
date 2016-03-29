@@ -23,6 +23,7 @@
  |   3/20/2016 - Added statistics to track number of generated, distinct, and
  |                 expanded nodes.
  |   3/20/2016 - Altered node structure and DFS search to implement DFID.
+ |   3/29/2016 - Adjusted DFID to also check closed list for depth bound.
  |
  |#
 
@@ -59,6 +60,7 @@
         ;    *NUM_DIST*
         ;    *NUM_EXP*
         ;)
+        
         ( setf solutionFound? ( search_bfs_dfs ( copy-list start ) 'dfid i ) )
     )
 )
@@ -101,37 +103,42 @@
             ; increment number of generated nodes
             ( setf *NUM_GEN* ( 1+ *NUM_GEN* ) )
 
-            ; if the node is not on OPEN or CLOSED
-            (when   (and (not (member child OPEN   :test #'equal-states))
-                         (not (member child CLOSED :test #'equal-states))
+            ; if the node is not on OPEN
+            (when (not (member child OPEN   :test #'equal-states))
+                ( let 
+                    ;Local vars
+                    (
+                        ( temp ( car ( member child CLOSED :test #'equal-states ) ) )
                     )
-                
-                ; increment number of distinct nodes
-                ( setf *NUM_DIST* ( 1+ *NUM_DIST* ) )
+                    
+                    ; If node is not on CLOSED, or has larget depth bound
+                    ( when  ( or    ( null temp )
+                                    ( > (node-depth temp) (node-depth child) )
+                            )
+                        
+                    
+                        ; increment number of distinct nodes
+                        ( setf *NUM_DIST* ( 1+ *NUM_DIST* ) )
 
-                ; add it to the OPEN list
-                (cond
+                        ; add it to the OPEN list
+                        (cond
 
-                    ; BFS - add to end of OPEN list (queue)
-                    ((eq type 'bfs) (setf OPEN (append OPEN (list child))))
+                            ; BFS - add to end of OPEN list (queue)
+                            ((eq type 'bfs) (setf OPEN (append OPEN (list child))))
 
-                    ; DFID - add to start of OPEN list (stack)
-                    ((eq type 'dfid)
-                        ; check if node within depth bound
-                        ( if ( < ( node-depth child ) bound )
-                            ; if within depth bound, add to open list
-                            (setf OPEN (cons child OPEN))                    
-                            
-                            ; else do not add to open list or track statistics
-                            ;( let ()
-                            ;    ( setf *NUM_GEN* ( 1- *NUM_GEN* ) )
-                            ;    ( setf *NUM_DIST* ( 1- *NUM_DIST* ) )
-                            ;)
+                            ; DFID - add to start of OPEN list (stack)
+                            ((eq type 'dfid)
+                                ; check if node within depth bound
+                                ( when ( < ( node-depth child ) bound )
+                                    ; if within depth bound, add to open list
+                                    (setf OPEN (cons child OPEN))
+                                )
+                            )
+
+                            ; error handling for incorrect usage
+                            (t (format t "SEARCH: bad search type! ~s~%" type) (return nil))
                         )
                     )
-
-                    ; error handling for incorrect usage
-                    (t (format t "SEARCH: bad search type! ~s~%" type) (return nil))
                 )
             )
         )
