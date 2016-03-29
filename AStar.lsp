@@ -24,7 +24,7 @@
     ( setf *NUM_DIST* 0 )
     ( setf *NUM_EXP*  0 )
 	
-	(format t "A* Search (Mangattan)~%")
+	(format t "A* Search (Manhattan)~%")
 	(format t "---------------------~%")
 	(printSearchResults (doAStar ( copy-list start ) #'manhattan goal))
 	

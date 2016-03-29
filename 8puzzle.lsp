@@ -34,6 +34,7 @@
  ( defun 8puzzle ( &optional ( puzzle nil ) )
     ;Load program files
     ( load 'search)
+    ( load 'solvable )
     ( load 'utilities)
 	( load 'AStar)
 	
@@ -52,35 +53,46 @@
 		)
 	
 	)
-
-    ;Reset global variables that track statistics of search    
-    ( setf *NUM_GEN*  0 )
-    ( setf *NUM_DIST* 0 )
-    ( setf *NUM_EXP*  0 )
-	
     
-    ;Perform BFS and print results
-    ( format t "~%BFS Graph Search~%" )
-    ( format t "----------------~%" )
-    ( printSearchResults ( BFS puzzle ) )
-    
-    ;Reset global variables that track statistics of search    
-    ( setf *NUM_GEN*  0 )
-    ( setf *NUM_DIST* 0 )
-    ( setf *NUM_EXP*  0 )
-    
-    ;Perform DFID and print results
-    ( format t "DFID Graph Search~%" )
-    ( format t "-----------------~%" )
-    ( printSearchResults ( DFID puzzle ) )
-	
-	;Reset global variables that track statistics of search    
-    ( setf *NUM_GEN*  0 )
-    ( setf *NUM_DIST* 0 )
-    ( setf *NUM_EXP*  0 )
-	
-	;Perform A* and print results
-	(printSearchResults (AStar puzzle))
+    ;Check if problem is solvable
+    ( cond
+        ;If solvable
+        ( ( solvable puzzle )
+            ;Reset global variables that track statistics of search    
+            ( setf *NUM_GEN*  0 )
+            ( setf *NUM_DIST* 0 )
+            ( setf *NUM_EXP*  0 )
+                
+            ;Perform BFS and print results
+            ( format t "~%BFS Graph Search~%" )
+            ( format t "----------------~%" )
+            ( printSearchResults ( BFS puzzle ) )
+            
+            ;Reset global variables that track statistics of search    
+            ( setf *NUM_GEN*  0 )
+            ( setf *NUM_DIST* 0 )
+            ( setf *NUM_EXP*  0 )
+            
+            ;Perform DFID and print results
+            ( format t "DFID Graph Search~%" )
+            ( format t "-----------------~%" )
+            ( printSearchResults ( DFID puzzle ) )
+            
+            ;Reset global variables that track statistics of search    
+            ( setf *NUM_GEN*  0 )
+            ( setf *NUM_DIST* 0 )
+            ( setf *NUM_EXP*  0 )
+            
+            ;Perform A* and print results
+            (printSearchResults (AStar puzzle))
+        )
+        
+        ;If not solvable
+        ( t
+            ( format t "ERROR: NO SOLUTION" )
+        )
+        
+    )
 )
 
 ;Script commands for program when run from command line
